@@ -99,14 +99,14 @@ export class UsersService {
     async getById(id: string): Promise<UserResponseDTO> {
         return new Promise(async (resolve, reject) => {
             try {
-                const user = new UserResponseDTO()
+                const user = new UserResponseDTO();
                 const user_info = await this.userModel.findById(new mongoose.mongo.ObjectId(id));
                 if (!user_info) {
                     throw new HttpException('User not found.', HttpStatus.NOT_FOUND);
                 }
-                user.setUserId(user_info._id)
-                user.setUserName(user_info.name)
-                user.setUserRole(user_info.role)
+                user.setUserId(user_info._id);
+                user.setUserName(user_info.name);
+                user.setUserRole(user_info.role);
                 resolve(user);
             } catch (error) {
                 reject(error);

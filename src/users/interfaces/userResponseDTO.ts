@@ -1,5 +1,4 @@
-
-class UserResponseDTO{
+class UserResponseDTO {
     private id!: string;
     private role!: string;
     private name!: string;
@@ -11,7 +10,7 @@ class UserResponseDTO{
     }
 
     public getUserId(): string {
-        return this.id
+        return this.id;
     }
 
     public setUserId(_id: string): void {
@@ -33,7 +32,6 @@ class UserResponseDTO{
     public setUserName(name: string) {
         this.name = name;
     }
-
 }
 
 export default UserResponseDTO;

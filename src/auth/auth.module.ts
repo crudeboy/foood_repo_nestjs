@@ -19,8 +19,8 @@ import { LocalStrategy } from './strategy/local.strategy';
                 signOptions: {
                     expiresIn: configService.get('jwt_expiration_duration'),
                 },
-              }),
-              inject: [ConfigService],
+            }),
+            inject: [ConfigService],
         }),
     ],
     providers: [AuthService, LocalStrategy, JwtStrategy],
