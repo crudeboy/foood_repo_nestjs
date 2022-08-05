@@ -9,7 +9,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth/auth.service';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
-@Controller('/root')
+@Controller('/')
 // eslint-disable-next-line import/prefer-default-export
 export class AppController {
     constructor(private authService: AuthService) {}
@@ -21,7 +21,7 @@ export class AppController {
     }
 
     // @UseGuards(JwtAuthGuard)
-    @Get('app-info')
+    @Get('')
     getUserInfo(@Request() _req) {
         return {
             info: 'the api doc, for seemless integration into your apps.',
