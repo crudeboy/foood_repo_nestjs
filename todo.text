@@ -1,0 +1,11 @@
+1.connect to the local db
+2.write completeauthetication flow
+ a.sign up
+ b.get users
+ c.email confirmation
+ d.
+
+
+ //using the config module
+ -injecting it into the service or controller
+ this.configService.get(-jwt_secret)
