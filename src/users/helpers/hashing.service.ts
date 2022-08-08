@@ -13,7 +13,7 @@ export class BcryptService {
     async hashPassword(password: string): Promise<string> {
         return new Promise(async (resolve, reject) => {
             try {
-                const hash = await bcrypt.hash(password, Number(this.configService.get('bcrypt_salt')));
+                const hash = await bcrypt.hash(password, Number(this.configService.get('BCRYPT_SALT')));
                 resolve(hash);
             } catch (error) {
                 reject('Error occurred while hashing password.');

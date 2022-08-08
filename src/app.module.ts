@@ -16,7 +16,7 @@ import { UsersModule } from './users/users.module';
         MongooseModule.forRootAsync({
             imports: [ConfigModule],
             useFactory: async (config: ConfigService) => ({
-                uri: config.get('environment') === 'development' ? config.get('mongo_local_db') : config.get('mongo_db_development'),
+                uri: config.get('ENVIRONMENT') === 'development' ? config.get('MONGO_LOCAL_DB') : config.get('MONGO_DB_DEVELOPMENT'),
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
             }),
