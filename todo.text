@@ -9,3 +9,7 @@
  //using the config module
  -injecting it into the service or controller
  this.configService.get(-jwt_secret)
+
+ //nest js commands to save your life man
+ nest g module users
+ nest g module orders

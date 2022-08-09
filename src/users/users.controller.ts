@@ -1,29 +1,23 @@
-/* eslint-disable max-len */
-/* eslint-disable camelcase */
-/* eslint-disable class-methods-use-this */
-/* eslint-disable no-return-await */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-empty-function */
-/* eslint-disable no-useless-constructor */
-/* eslint-disable import/prefer-default-export */
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/no-extraneous-dependencies */
 import { Body, Controller, Get, Param, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AuthService } from 'src/auth/auth.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/auth/guards/local-auth.guard';
+import { OtpService } from 'src/auth/otp.service';
+import { userResponseType } from './interfaces/userResponseType';
 import { UsersService } from './users.service';
 import { CreateUserModel } from './validations/createUser.validation';
+import { GenerateOtpValidator } from './validations/generateOtp';
+import { VerifyOtpValidator } from './validations/verifyOtp';
 
 @Controller('users')
 export class UsersController {
-    constructor(private userService: UsersService, private authService: AuthService) {}
+    constructor(private userService: UsersService, private authService: AuthService, private otpService: OtpService) {}
 
     @Post('/sign_up')
     async sign_up(@Req() req: Request, @Res() res: Response, @Body() user_details: CreateUserModel) {
         const { username, email, password } = user_details;
-        const new_user = await this.userService.create(username, email, password);
+        const new_user = await this.userService.createUser(username, email, password);
         res.send(new_user);
     }
 
@@ -50,10 +44,28 @@ export class UsersController {
 
     @UseGuards(LocalAuthGuard) //how to have the user object available on every request
     @Post('/login')
-    async login(@Req() req: Request, @Res() res: Response): Promise<any> {
-        console.log(req.user, 'req.user');
-        const user = await this.authService.loginWithCredentials(req.user);
-        return res.json(user);
+    async login(@Req() req: Request, @Res() res: Response) {
+        const user = <userResponseType>req.user;
+        const user_details = await this.authService.loginWithCredentials(user);
+        return res.json(user_details);
+    }
+
+    @Post('/generateOtp')
+    async generateOtp(@Req() req: Request, @Res() res: Response, @Body() otp_model: GenerateOtpValidator) {
+        const otp = await this.otpService.generateOtp(otp_model.user_id);
+        return res.json({
+            success: true,
+            otp,
+        });
+    }
+
+    @Post('/verifyOtp')
+    async verifyOtp(@Req() req: Request, @Res() res: Response, @Body() otp_details: VerifyOtpValidator) {
+        const { user_id, otp } = otp_details;
+        const isValid = await this.userService.verifyUserOtp(user_id, otp);
+        return res.json({
+            success: isValid,
+        });
     }
 
     @UseGuards(JwtAuthGuard)

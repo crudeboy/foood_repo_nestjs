@@ -5,9 +5,6 @@ import { UserrequestDTO } from '../interfaces/users.interface';
 
 @Schema({ timestamps: true })
 export class User extends Document implements UserrequestDTO {
-    // @Prop({ required: true, type: mongoose.SchemaTypes.ObjectId })
-    // _id: string;
-
     @Prop({ required: true, unique: true })
     name: string;
 

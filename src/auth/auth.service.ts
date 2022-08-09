@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import UserResponseDTO from 'src/users/dto/userResponseDTO';
+import { userResponseType } from 'src/users/interfaces/userResponseType';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class AuthService {
-    constructor(private usersService: UsersService, private jwtTokenService: JwtService) {}
+    constructor(@Inject(forwardRef(() => UsersService)) private usersService: UsersService, private jwtTokenService: JwtService) {}
 
     async validateUserCredentials(username: string, password: string): Promise<any> {
         return new Promise(async (resolve, reject) => {
@@ -27,11 +29,11 @@ export class AuthService {
         });
     }
 
-    async loginWithCredentials(user: any) {
+    async loginWithCredentials(user: userResponseType) {
         return new Promise(async (resolve, reject) => {
             try {
-                const payload = { username: user.name, id: user.id };
-                const user_details = await this.usersService.findOne(user.name);
+                const payload = { username: user.username, id: user.id, role: user.role };
+                const user_details = await this.usersService.findOne(user.username);
                 console.log(user_details, 'user_details');
                 const login_details = {
                     ...payload,
