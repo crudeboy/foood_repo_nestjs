@@ -6,7 +6,7 @@
 /* eslint-disable no-async-promise-executor */
 /* eslint-disable import/order */
 /* eslint-disable import/no-unresolved */
-import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, HttpException, HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schema/users.schema';
 import mongoose, { Model } from 'mongoose';
@@ -20,6 +20,8 @@ import { otpResponseMessage } from 'src/auth/interfaces/otpResponse';
 
 @Injectable()
 export class UsersService {
+    logger: Logger;
+
     constructor(
         @InjectModel(User.name) private userModel: Model<User>,
         private bcryptService: BcryptService,
@@ -27,7 +29,9 @@ export class UsersService {
         @Inject(forwardRef(() => AuthService))
         private authService: AuthService,
         private mailService: MailService
-    ) {}
+    ) {
+        this.logger = new Logger(UsersService.name)
+    }
 
     async findOne(username: string): Promise<any> {
         const user = await this.userModel.findOne({ name: username });
@@ -48,6 +52,8 @@ export class UsersService {
 
     async createUser(username: string, email: string, password: string): Promise<any> {
         try {
+
+            this.logger.log("creating a new user")
             const hashedPassoword = await this.bcryptService.hashPassword(password);
 
             const email_exists = await this.checkForUniqueEmail(email);
@@ -72,8 +78,8 @@ export class UsersService {
             //trigger an event to generate an otp for the
             const otp = await this.generateUserOtp(user.getUserId())
             console.log(otp, "otp", user, "user")
-            //send otp email...
-            await this.mailService.sendOtp(username, email, otp.otp)
+            //send otp email... //under debugging
+            // await this.mailService.sendOtp(username, email, otp.otp)
             return Promise.resolve(user);
         } catch (error) {
             return Promise.reject(error);

@@ -5,38 +5,42 @@ import { MailService } from './mail.service';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { ConfigService } from '@nestjs/config';
 
-
 @Module({
-  imports: [
-    MailerModule.forRootAsync({
-      // transport: 'smtps://user@example.com:topsecret@smtp.example.com',
-      // or
-      useFactory: async (config: ConfigService) => ({
-        // transport: config.get("MAIL_TRANSPORT"),
-        // or
-        transport: {
-          host: config.get('MAIL_HOST'),
-          secure: false,
-          auth: {
-            user: config.get('MAIL_USER'),
-            pass: config.get('MAIL_PASSWORD'),
-          },
-        },
-        defaults: {
-          from: `"No Reply" <${config.get('MAIL_FROM')}>`,
-        },
-        template: {
-          dir: join(__dirname, 'templates'),
-          adapter: new HandlebarsAdapter(),
-          options: {
-            strict: true,
-          },
-        },
-      }),
-      inject: [ConfigService],
-    }),
-  ],
-  providers: [MailService],
-  exports: [MailService]
+    imports: [
+        MailerModule.forRootAsync({
+            // transport: 'smtps://user@example.com:topsecret@smtp.example.com',
+            // or
+            useFactory: async (config: ConfigService) => ({
+                // transport: config.get("MAIL_TRANSPORT"),
+                // or
+                transport: {
+                    host: config.get('MAIL_HOST'),
+                    secure: false,
+                    // port: 465,
+                    auth: {
+                        // type: 'OAuth2',
+                        // user: config.get('MAIL_USER'),
+                        // serviceClient: process.env.MAIL_CLIENT_ID,
+                        // privateKey: process.env.MAIL_PRIVATE_KEY.replace(/\\n/g, '\n'),
+                        user: config.get('MAIL_USER'),
+                        pass: config.get('MAIL_PASSWORD'),
+                    },
+                },
+                defaults: {
+                    from: `"No Reply" <${config.get('MAIL_FROM')}>`,
+                },
+                template: {
+                    dir: join(__dirname, 'templates'),
+                    adapter: new HandlebarsAdapter(),
+                    options: {
+                        strict: true,
+                    },
+                },
+            }),
+            inject: [ConfigService],
+        }),
+    ],
+    providers: [MailService],
+    exports: [MailService],
 })
 export class NotificationModule {}
