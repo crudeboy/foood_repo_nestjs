@@ -28,9 +28,9 @@ export class UsersService {
         private otpService: OtpService,
         @Inject(forwardRef(() => AuthService))
         private authService: AuthService,
-        private mailService: MailService
+        private mailService: MailService,
     ) {
-        this.logger = new Logger(UsersService.name)
+        this.logger = new Logger(UsersService.name);
     }
 
     async findOne(username: string): Promise<any> {
@@ -52,8 +52,7 @@ export class UsersService {
 
     async createUser(username: string, email: string, password: string): Promise<any> {
         try {
-
-            this.logger.log("creating a new user")
+            this.logger.log('creating a new user');
             const hashedPassoword = await this.bcryptService.hashPassword(password);
 
             const email_exists = await this.checkForUniqueEmail(email);
@@ -76,10 +75,10 @@ export class UsersService {
             user.setUserRole(user_info.role);
             user.setMessage('Otp has been sent to ypur email.');
             //trigger an event to generate an otp for the
-            const otp = await this.generateUserOtp(user.getUserId())
-            console.log(otp, "otp", user, "user")
+            const otp = await this.generateUserOtp(user.getUserId());
+            // console.log(otp, "otp", user, "user")
             //send otp email... //under debugging
-            // await this.mailService.sendOtp(username, email, otp.otp)
+            await this.mailService.sendOtp(username, email, otp.otp);
             return Promise.resolve(user);
         } catch (error) {
             return Promise.reject(error);
@@ -144,9 +143,9 @@ export class UsersService {
         return user;
     }
 
-    async generateUserOtp(user_id: string): Promise<otpResponseMessage>{
-        const otp_response = await this.otpService.generateOtp(user_id)
-        return Promise.resolve(otp_response)
+    async generateUserOtp(user_id: string): Promise<otpResponseMessage> {
+        const otp_response = await this.otpService.generateOtp(user_id);
+        return Promise.resolve(otp_response);
     }
 
     async verifyUserOtp(userId: string, otp: number): Promise<any> {
@@ -155,11 +154,6 @@ export class UsersService {
                 const otp_verified = await this.otpService.verifyOtp(userId, otp);
                 if (otp) {
                     const user = <userResponseType>(<unknown>await this.getById(userId));
-
-                    // const user = new UserResponseDTO();
-                    // user.setUserId(user_info.getUserId());
-                    // user.setUserName(user_info.getUserName());
-                    // user.setUserRole(user_info.getUserRole());
                     const verifiedUser = await this.authService.loginWithCredentials(user);
                     resolve(user);
                 }

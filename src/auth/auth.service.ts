@@ -33,13 +33,10 @@ export class AuthService {
         return new Promise(async (resolve, reject) => {
             try {
                 const payload = { username: user.username, id: user.id, role: user.role };
-                const user_details = await this.usersService.findOne(user.username);
-                console.log(user_details, 'user_details');
                 const login_details = {
                     ...payload,
                     access_token: this.jwtTokenService.sign(payload),
                 };
-                console.log(login_details, 'login_details');
                 resolve(login_details);
             } catch (error) {
                 reject(error);

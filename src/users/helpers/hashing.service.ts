@@ -1,7 +1,3 @@
-/* eslint-disable class-methods-use-this */
-/* eslint-disable no-async-promise-executor */
-/* eslint-disable prefer-promise-reject-errors */
-/* eslint-disable import/prefer-default-export */
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';

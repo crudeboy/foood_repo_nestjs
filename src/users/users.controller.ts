@@ -25,7 +25,6 @@ export class UsersController {
     @Get('/getUserById/:id')
     async getUserById(@Req() req: Request, @Res() res: Response, @Param() id: string): Promise<any> {
         const user = await this.userService.getById(id);
-        console.log('user by id', user);
         res.send(user);
     }
 
