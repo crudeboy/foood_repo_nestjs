@@ -11,6 +11,8 @@ import { NotificationModule } from './notification/notification.module';
 import { LoggerMiddleware } from './utils/logger.middleware';
 import { APP_FILTER } from '@nestjs/core';
 import { HttpErrorFilter } from './utils/http-error.filter';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { EventsModule } from './events/events.module';
 
 @Module({
     imports: [
@@ -29,6 +31,8 @@ import { HttpErrorFilter } from './utils/http-error.filter';
         AuthModule,
         UsersModule,
         NotificationModule,
+        EventEmitterModule.forRoot(),
+        EventsModule,
     ],
     controllers: [AppController],
     providers: [

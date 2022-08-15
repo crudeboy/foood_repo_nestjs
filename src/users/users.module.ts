@@ -8,9 +8,16 @@ import { User, UserSchema } from './schema/users.schema';
 import { UsersService } from './users.service';
 import { BcryptService } from './helpers/hashing.service';
 import { NotificationModule } from 'src/notification/notification.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { EventsModule } from 'src/events/events.module';
 
 @Module({
-    imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]), forwardRef(() => AuthModule), NotificationModule],
+    imports: [
+        MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+        forwardRef(() => AuthModule),
+        NotificationModule,
+        EventsModule
+    ],
     providers: [UsersService, BcryptService],
     exports: [UsersService],
     controllers: [UsersController],

@@ -17,6 +17,7 @@ export class UsersController {
     @Post('/sign_up')
     async sign_up(@Req() req: Request, @Res() res: Response, @Body() user_details: CreateUserModel) {
         const { username, email, password } = user_details;
+        console.log(user_details, "user_details")
         const new_user = await this.userService.createUser(username, email, password);
         res.send(new_user);
     }

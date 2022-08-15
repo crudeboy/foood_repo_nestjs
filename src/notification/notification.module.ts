@@ -4,6 +4,7 @@ import { join } from 'path';
 import { MailService } from './mail.service';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { ConfigService } from '@nestjs/config';
+import { NotificationController } from './notification.controller';
 
 @Module({
     imports: [
@@ -42,5 +43,6 @@ import { ConfigService } from '@nestjs/config';
     ],
     providers: [MailService],
     exports: [MailService],
+    controllers: [NotificationController],
 })
 export class NotificationModule {}

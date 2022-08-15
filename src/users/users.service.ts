@@ -17,6 +17,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { userResponseType } from './interfaces/userResponseType';
 import { MailService } from 'src/notification/mail.service';
 import { otpResponseMessage } from 'src/auth/interfaces/otpResponse';
+import { EventsService } from 'src/events/events.service';
 
 @Injectable()
 export class UsersService {
@@ -29,6 +30,7 @@ export class UsersService {
         @Inject(forwardRef(() => AuthService))
         private authService: AuthService,
         private mailService: MailService,
+        private eventService: EventsService
     ) {
         this.logger = new Logger(UsersService.name);
     }
@@ -59,7 +61,7 @@ export class UsersService {
             if (email_exists) {
                 throw new HttpException('Email already exists.', HttpStatus.CONFLICT);
             }
-            const username_exists = await this.checkForUniqueEmail(email);
+            const username_exists = await this.checkForUniqueUsername(username);
             if (username_exists) {
                 throw new HttpException('Username already exists.', HttpStatus.CONFLICT);
             }
@@ -76,9 +78,16 @@ export class UsersService {
             user.setMessage('Otp has been sent to ypur email.');
             //trigger an event to generate an otp for the
             const otp = await this.generateUserOtp(user.getUserId());
-            // console.log(otp, "otp", user, "user")
+       
             //send otp email... //under debugging
-            await this.mailService.sendOtp(username, email, otp.otp);
+            const mail_info = {
+                email: 'olopopowill@gmail.com',
+                username: username,
+                otp: otp.otp,
+            };
+     
+            await this.eventService.emitOTPEmailEvent(mail_info)
+            // await this.mailService.sendOTPMail(mail_info);
             return Promise.resolve(user);
         } catch (error) {
             return Promise.reject(error);
@@ -89,6 +98,7 @@ export class UsersService {
         return new Promise(async (resolve, reject) => {
             try {
                 const user = await this.getByUsername(username);
+                console.log(user, "getting the user checking for unique username.")
                 if (user) resolve(true);
                 resolve(false);
             } catch (error) {
@@ -101,6 +111,7 @@ export class UsersService {
         return new Promise(async (resolve, reject) => {
             try {
                 const user = await this.getByEmail(email);
+                console.log(user, "checking for unique email ******")
                 if (user) resolve(true);
                 resolve(false);
             } catch (error) {
@@ -130,7 +141,7 @@ export class UsersService {
     async getByUsername(username: string): Promise<any> {
         return new Promise(async (resolve, reject) => {
             try {
-                const user = await this.userModel.findOne({ username });
+                const user = await this.userModel.findOne({ name: username });
                 resolve(user);
             } catch (error) {
                 reject(error);
